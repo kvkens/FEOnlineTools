@@ -1,0 +1,28 @@
+{
+  "name": "ehaier",
+  "authors": [
+    "Kvkens(kvkens@qq.com)"
+  ],
+  "description": "ehaier online",
+  "main": "",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "nodejs"
+  ],
+  "license": "MIT",
+  "homepage": "http://www.imyy.org",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.2.0",
+    "bootstrap": "~3.3.6",
+    "eventproxy": "^0.3.1"
+  }
+}

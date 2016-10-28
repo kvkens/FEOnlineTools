@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+   		<meta name="description" content="海尔商城前端静态资源部署系统">
+    	<meta name="author" content="Kvkens(kvkens@qq.com)">
+    	<link rel="icon" href="../favicon.ico">
+		<title>海尔商城前端上线系统</title>
+		<!-- Bootstrap core CSS -->
+    	<link href="./libs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">    	
+    	<link href="./libs/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
+		<style>
+			.body-main{
+				margin-top:65px;
+				/*background: #1B6D85;*/
+			}
+			.body-news{
+				border-bottom: 1px solid #ececec;
+			}
+			.footer{
+				margin-top:20px;
+			}
+			textarea{	
+				resize: none;
+			}
+		</style>
+		<!-- Bootstrap core JavaScript================================================== -->
+	    <!-- Placed at the end of the document so the pages load faster -->
+	    <script src="./libs/jquery/dist/jquery.min.js"></script>
+	    <script src="./libs/bootstrap/dist/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		 <nav class="navbar navbar-inverse navbar-static-top">
+	      <div class="container">
+	        <div class="navbar-header">
+	          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+	            <span class="sr-only">Toggle navigation</span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	          </button>
+	          <a class="navbar-brand" href="/">海尔商城前端静态资源上线系统</a>
+	        </div>
+	        <ul class="nav navbar-nav">
+              <li><a href="/">帮助说明</a></li>
+            </ul>
+	        <div id="navbar" class="navbar-collapse collapse">
+	          <form class="navbar-form navbar-right" method="post" action="./Login">
+	          <% if(!session.User) { %>
+					<div class="form-group">
+			          	<input type="text" name="users[username]" class="form-control" placeholder="输入用户名" />
+			        </div>
+			        <div class="form-group">
+			          	<input type="password" name="users[password]" class="form-control" placeholder="输入密码" />
+			        </div>
+			        <div class="form-group">
+			            <input type="submit" class="btn btn-success" value="登录" />
+			        </div>
+			        <div class="form-group">
+			            <a href="./Register" class="btn btn-info">注册</a>
+			        </div>
+	          <%}else{%>
+	          		<div class="form-group">
+			          	<span class="label label-info">欢迎：[<%=session.User.realname%>]，♪(^∇^*)</span>
+			        </div>
+			        <div class="form-group">
+			            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#myModal">配置</a>
+			        </div>
+			        <div class="form-group">
+			            <a href="./Log" class="btn btn-default">日志</a>
+			        </div>
+			        <%if(session.User.username == "admin"){%>
+			        <div class="form-group">
+			            <a href="./Admin" class="btn btn-warning">管理</a>
+			        </div>
+			        <%}%>
+			        <div class="form-group">
+			            <a href="./Logout" class="btn btn-danger">注销</a>
+			        </div>
+	          <%}%>
+
+	          </form>
+	        </div>
+	      </div>
+	    </nav>
+	    <% if(session.User) { %>
+	    <!-- Modal -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">配置静态列表</h4>
+		      </div>
+		      <div class="modal-body">
+		      		<form id="opform" class="form-horizontal">
+					  <div class="form-group">
+					    <label for="inputFileName" class="col-sm-3 control-label">文件名：</label>
+					    <div class="col-sm-9">
+					      <input type="text" class="form-control" id="inputFileName" name="inputFileName" placeholder="输入描述文字！例如：首页脚本">
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label for="inputFileUrl" class="col-sm-3 control-label">文件相对路径：</label>
+					    <div class="col-sm-9">
+					      <input type="text" class="form-control" id="inputFileUrl" name="inputFileUrl" placeholder="输入相对路径！例如：v5/js/index.js">
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <div class="col-sm-12">
+					    	<div class="col-sm-offset-3 col-sm-2">
+					    		<button id="btnAdd" type="button" class="col-sm-12 btn btn-info">添加</button>		
+					    	</div>
+					    	<div class="col-sm-2">
+					    		<button id="btnUpdate" type="button" class="col-sm-12 btn btn-default">修改</button>
+					    	</div>
+					    	<div class="col-sm-2">
+					    		<button id="btnDelete" type="button" class="col-sm-12 btn btn-danger">删除</button>
+					    	</div>
+					    </div>
+					  </div>
+					</form>
+					<div class="form-group">
+						<table id="tblGrid" class="table table-striped table-bordered table-hover ">
+							<tr role="title">
+								<th>描述</th>
+								<th>相对路径</th>
+							</tr>
+						</table>
+					</div>
+					<div class="form-group">
+						<nav>
+						  <ul class="pager">
+						    <li class="previous"><a id="btnUp" href="#"><span aria-hidden="true">&larr;</span> 上页</a></li>
+						    <li class="next"><a id="btnDown" href="#">下页 <span aria-hidden="true">&rarr;</span></a></li>
+						  </ul>
+						</nav>
+					</div>
+		      </div>
+		      <div class="modal-footer">
+		        <button data-dismiss="modal" type="button" class="btn btn-primary">关闭</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		<!-- modal -->
+		<script src="./static/compress?path=assets/libs/eventproxy/lib/eventproxy.js&type=js&min=true"></script>
+		<script src="./static/compress?path=assets/js/index.js&type=js&min=true"></script>
+		<%}%>
+	    <div class="container">
+	    	<%-body -%>
+	    </div>
+		<hr>
+		<footer class="footer">
+	      <div class="container">
+	        <p class="text-muted">本站基于Node.js、Express、Bootstrap 技术构建 当前程序版本：Ver:1.0</p>
+	        <p class="text-muted">Copyright&nbsp;&copy;&nbsp;2016 海尔商城前端静态资源上线系统 Power by Kvkens(yueming@ehaier.com)</p>
+	      </div>
+	    </footer>
+	    
+	</body>
+</html>
